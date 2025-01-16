@@ -2,15 +2,17 @@ import express from "express"
 import authRouter from './routes/authRouter.js'
 import dotenv from "dotenv"
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js"
-
+import cookieParser from "cookie-parser"
 
 const app = express()
 
 const port = 3000
 
 //Middleware
-app.use(express.json())
-app.use(express.urlencoded({extended : true}))
+app.use(express.json()) // agar request body bisa json
+app.use(express.urlencoded({extended : true}))  // memasukkan inputan di urlencoded pada postman
+app.use(cookieParser())
+
 
 dotenv.config()
 
@@ -25,7 +27,7 @@ app.use(errorHandler)
 
 // import { MongoClient, ServerApiVersion } from "mongodb"
 
-// const uri = "mongodb+srv://benyaminsibarani2406:JIgP6ldWjJuxYIWh@cluster0.qpoml.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+// const uri = "mongodb+srv://benyaminsibarani2406:JIgP6ldWjJuxYIWh@cluster0.qpoml.mongodb.net/Ecommerce_MERN?retryWrites=true&w=majority&appName=Cluster0";
 
 // // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 // const client = new MongoClient(uri, {
@@ -50,31 +52,57 @@ app.use(errorHandler)
 // }
 // run().catch(console.dir);
 
+// import mongoose from "mongoose";
+
+// // Gantilah dengan URI Atlas Anda
+// const uri = process.env.DATABASE
+
+// async function run() {
+//   try {
+//     // Menghubungkan ke MongoDB Atlas menggunakan Mongoose
+//     await mongoose.connect(uri);
+//     console.log("Connected to MongoDB Atlas!");
+
+//     // Memastikan koneksi berhasil dengan melakukan ping
+//     const admin = mongoose.connection.db.admin(); 
+//     await admin.ping();
+//     console.log("Pinged your deployment. You successfully connected to MongoDB!");
+
+//   } catch (error) {
+//     console.error("Error connecting to MongoDB Atlas:", error);
+//   } finally {
+//     // Menutup koneksi setelah operasi selesai
+//     await mongoose.disconnect();
+//   }
+// }
+
+// run().catch(console.dir);
+
 import mongoose from "mongoose";
 
 // Gantilah dengan URI Atlas Anda
-const uri = process.env.DATABASE
+const uri = process.env.DATABASE;
 
-async function run() {
+async function connectToDatabase() {
   try {
     // Menghubungkan ke MongoDB Atlas menggunakan Mongoose
-    await mongoose.connect(uri);
+    await mongoose.connect(uri, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
     console.log("Connected to MongoDB Atlas!");
 
     // Memastikan koneksi berhasil dengan melakukan ping
-    const admin = mongoose.connection.db.admin(); 
+    const admin = mongoose.connection.db.admin();
     await admin.ping();
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
-
   } catch (error) {
     console.error("Error connecting to MongoDB Atlas:", error);
-  } finally {
-    // Menutup koneksi setelah operasi selesai
-    await mongoose.disconnect();
+    process.exit(1); // Keluar dari aplikasi jika koneksi gagal
   }
 }
 
-run().catch(console.dir);
+connectToDatabase(); // Jalankan fungsi koneksi
 
 
 app.listen(port, () => console.log(`Server up and run at ${port} port`))
