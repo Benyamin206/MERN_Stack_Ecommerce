@@ -66,3 +66,44 @@ export const loginUser = asyncHandler(async(req, res) => {
     }
 
 })
+
+
+export const getCurrentUser = asyncHandler(async (req, res) => {
+    // Tambahkan await untuk menunggu hasil query
+    const user = await User.findById(req.user._id).select('-password')
+
+    if (user) {
+        // Menggunakan toObject untuk menghindari masalah sirkular
+        res.status(200).json({
+            user: user.toObject()  // Pastikan ini adalah objek biasa, bukan MongoDB document
+        })
+    } else {
+        res.status(404)
+        throw new Error('User not found :(')
+    }
+})
+
+// export const getCurrentUser = asyncHandler(async(req, res) => {
+//     const user = User.findById(req.user._id).select('-password')
+
+//     if(user){
+//         res.status(200).json({
+//             user
+//         })
+//     }else{
+//         res.status(404)
+//         throw new Error('user not found :(')
+//     }
+// })
+
+
+export const logoutUser = async(req, res) => {
+    res.cookie('jwt', "", {
+        httpOnly : true,
+        expires : new Date(Date.now())
+    })
+
+    res.status(200).json({
+        message : "Logout berhasil"
+    })
+}
