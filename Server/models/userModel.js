@@ -40,6 +40,10 @@ userSchema.pre("save", async function() {
     this.password = await bycrypt.hash(this.password, salt)
 })
 
+userSchema.methods.comparePassword = async function(reqBody){
+    return await bycrypt.compare(reqBody, this.password)
+}
+
 const User = mongoose.model("User", userSchema)
 
 export default User

@@ -1,7 +1,7 @@
 import express from "express"
 import User from "../models/userModel.js"
 import asyncHandler from "../middleware/asyncHandler.js"
-import { registerUser } from "../controllers/authController.js"
+import { loginUser, registerUser } from "../controllers/authController.js"
 
 
 const router = express.Router()
@@ -11,9 +11,7 @@ router.post('/register', registerUser)
 
 
 // post /api/v1/auth/login
-router.post('/login', (req, res) => {
-    res.send('Login')
-})
+router.post('/login', loginUser)
 
 
 // get /api/v1/auth/logout
