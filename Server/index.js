@@ -1,5 +1,6 @@
 import express from "express"
 import authRouter from './routes/authRouter.js'
+import productRouter from './routes/productRouter.js'
 import dotenv from "dotenv"
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js"
 import cookieParser from "cookie-parser"
@@ -18,6 +19,8 @@ dotenv.config()
 
 
 app.use('/api/v1/auth', authRouter)
+app.use('/api/v1/product', productRouter)
+
 
 app.use(notFound)
 app.use(errorHandler)
