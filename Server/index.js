@@ -13,6 +13,7 @@ const port = 3000
 app.use(express.json()) // agar request body bisa json
 app.use(express.urlencoded({extended : true}))  // memasukkan inputan di urlencoded pada postman
 app.use(cookieParser())
+app.use(express.static('./public'))
 
 
 dotenv.config()

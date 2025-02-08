@@ -25,7 +25,7 @@ const createSendResToken = (user, statusCode, res) => {
     res.cookie('jwt', token, cookieOption)
  
     user.password = undefined
-
+    
     res.status(statusCode).json({
         data : user
     })
@@ -49,6 +49,14 @@ export const registerUser = asyncHandler(async (req, res) => {
 
 
 export const loginUser = asyncHandler(async(req, res) => {
+
+    const token = req.cookies.jwt
+
+    if(token){
+        res.status(400)
+        throw new Error("Anda belum logout")
+    }
+
     if(!req.body.email || !req.body.password){
         res.status(400)
         throw new Error('Email atau password tidak boleh kosong')
@@ -68,10 +76,15 @@ export const loginUser = asyncHandler(async(req, res) => {
 })
 
 
+// const ahandler = fn => (req, res, next) => {
+//     Promise.resolve(fn(req,res,next)).catch(next())
+// }
+
+
 export const getCurrentUser = asyncHandler(async (req, res) => {
     // Tambahkan await untuk menunggu hasil query
     const user = await User.findById(req.user._id).select('-password')
-
+    
     if (user) {
         // Menggunakan toObject untuk menghindari masalah sirkular
         res.status(200).json({

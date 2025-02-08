@@ -4,7 +4,6 @@ import asyncHandler from "./asyncHandler.js"
 
 export const protectedMiddleware = asyncHandler(async(req, res, next) => {
     const token = req.cookies.jwt
-
     if(token){
         try{
             const decode = jwt.verify(token, process.env.JWT_SECRET)
@@ -20,3 +19,14 @@ export const protectedMiddleware = asyncHandler(async(req, res, next) => {
         throw new Error('Not Authorized, no token')
     }
 })
+
+export const adminMiddleware = asyncHandler(
+    async (req, res, next) => {
+        if(req.user && req.user.role === 'owner'){
+            next()
+        }else{
+            res.status(401)
+            throw new Error("Not Authorized as Owner")
+        }
+    }
+)

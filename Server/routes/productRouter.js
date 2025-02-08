@@ -1,18 +1,20 @@
 import express from "express"
-import { protectedMiddleware } from "../middleware/authMiddleware.js"
-import { CreateProduct, updateProduct, deleteProduct, AllProduct, fileUpload } from "../controllers/ProductController.js"
-
+import { protectedMiddleware, adminMiddleware } from "../middleware/authMiddleware.js"
+import { CreateProduct, updateProduct, deleteProduct, AllProduct, fileUpload, detailProduct } from "../controllers/ProductController.js"
+import { upload } from "../utils/uploadFileHandler.js"
 
 const router = express.Router()
 
-router.post('/', protectedMiddleware, CreateProduct)
+router.post('/', protectedMiddleware, adminMiddleware, CreateProduct)
 
 router.get('/', protectedMiddleware, AllProduct)
 
-router.put('/:id', protectedMiddleware, updateProduct)
+router.get('/:id', protectedMiddleware, detailProduct)
 
-router.delete('/:id', protectedMiddleware, deleteProduct)
+router.put('/:id', protectedMiddleware, adminMiddleware,updateProduct)
 
-router.post('/file-upload', protectedMiddleware, fileUpload)  
+router.delete('/:id', protectedMiddleware, adminMiddleware,deleteProduct)
+
+router.post('/file-upload', protectedMiddleware, adminMiddleware, upload.single('image'), fileUpload)  
 
 export default router
