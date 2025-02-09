@@ -32,7 +32,7 @@ export const AllProduct = asyncHandler(async(req,res) => {
     }else{
         query = Product.find(queryObj)
     }
-
+    
     // let query = Product.find(queryObj)
 
     // // Pagination
