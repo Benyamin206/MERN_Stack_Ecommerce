@@ -7,7 +7,10 @@ const router = express.Router()
 
 router.post('/', protectedMiddleware, adminMiddleware, CreateProduct)
 
-router.get('/', protectedMiddleware, AllProduct)
+// router.get('/', protectedMiddleware, AllProduct)
+
+router.get('/', AllProduct)
+
 
 router.get('/:id', protectedMiddleware, detailProduct)
 

@@ -1,3 +1,4 @@
+import { query } from "express";
 import asyncHandler from "../middleware/asyncHandler.js";
 import Product from "../models/productModel.js";
 
@@ -14,12 +15,41 @@ export const CreateProduct = asyncHandler(async(req,res) => {
 
 export const AllProduct = asyncHandler(async(req,res) => {
     // res.send("All Product")
-    const data = await Product.find()
+    // const data = await Product.find()
+    const queryObj = {...req.query}
+    const excludeField = ["page", "limit"]
+
+    excludeField.forEach(element => delete queryObj[element])
+
+    // // console.log(queryObj)
+
+    let query = Product.find(queryObj)
+
+    // // Pagination
+    const page = req.query.page * 1 || 1
+    const limitData = req.query.limit || 30
+    const skipData = (page - 1) * limitData
+
+    query = query.skip(skipData).limit(limitData)
+
+    if(req.query.page){
+        const  numProduct = await Product.countDocuments()
+        if(skipData >= numProduct){
+            res.status(404)
+            throw new Error("This page doesnt exist")
+        }
+    }
+
+
+    const data = await query
+
+
 
     return res.status(200).json({
         message : "Berhasil tampil semua produk",
         data
     })
+
 })
 
 export const detailProduct = asyncHandler(async (req, res) => {
